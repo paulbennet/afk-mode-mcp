@@ -12,9 +12,7 @@ export function Settings({ settings, onUpdate }: Props) {
 
   return (
     <div className="px-4 py-4 space-y-6">
-      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-        Settings
-      </h2>
+      <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Settings</h2>
 
       {/* Verbosity */}
       <div>
@@ -41,17 +39,13 @@ export function Settings({ settings, onUpdate }: Props) {
       {/* Sound */}
       <div>
         <div className="flex items-center justify-between mb-2">
-          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-            Sound
-          </label>
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Sound</label>
           <button
             role="switch"
             aria-checked={settings.soundEnabled}
             onClick={() => update({ soundEnabled: !settings.soundEnabled })}
             className={`relative w-11 h-6 rounded-full transition-colors ${
-              settings.soundEnabled
-                ? "bg-blue-600"
-                : "bg-slate-300 dark:bg-slate-600"
+              settings.soundEnabled ? "bg-blue-600" : "bg-slate-300 dark:bg-slate-600"
             }`}
           >
             <span
@@ -68,9 +62,7 @@ export function Settings({ settings, onUpdate }: Props) {
             max={1}
             step={0.1}
             value={settings.soundVolume}
-            onChange={(e) =>
-              update({ soundVolume: parseFloat(e.target.value) })
-            }
+            onChange={(e) => update({ soundVolume: parseFloat(e.target.value) })}
             className="w-full h-2 rounded-lg appearance-none cursor-pointer accent-blue-600 bg-slate-200 dark:bg-slate-700"
             aria-label="Volume"
           />
@@ -79,19 +71,13 @@ export function Settings({ settings, onUpdate }: Props) {
 
       {/* Vibration */}
       <div className="flex items-center justify-between">
-        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
-          Vibration
-        </label>
+        <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Vibration</label>
         <button
           role="switch"
           aria-checked={settings.vibrationEnabled}
-          onClick={() =>
-            update({ vibrationEnabled: !settings.vibrationEnabled })
-          }
+          onClick={() => update({ vibrationEnabled: !settings.vibrationEnabled })}
           className={`relative w-11 h-6 rounded-full transition-colors ${
-            settings.vibrationEnabled
-              ? "bg-blue-600"
-              : "bg-slate-300 dark:bg-slate-600"
+            settings.vibrationEnabled ? "bg-blue-600" : "bg-slate-300 dark:bg-slate-600"
           }`}
         >
           <span

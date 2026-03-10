@@ -18,9 +18,7 @@ function AppInner() {
   const [settings, setSettings] = useState<AppSettings>(() => {
     try {
       const stored = localStorage.getItem("afk_settings");
-      return stored
-        ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) }
-        : DEFAULT_SETTINGS;
+      return stored ? { ...DEFAULT_SETTINGS, ...JSON.parse(stored) } : DEFAULT_SETTINGS;
     } catch {
       return DEFAULT_SETTINGS;
     }
@@ -56,9 +54,7 @@ function AppInner() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
         <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-slate-500 dark:text-slate-400">
-          Connecting to AFK Mode server…
-        </p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">Connecting to AFK Mode server…</p>
       </div>
     );
   }
@@ -67,12 +63,10 @@ function AppInner() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-6">
         <span className="text-5xl">🔌</span>
-        <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-          Disconnected
-        </h1>
+        <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Disconnected</h1>
         <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-          Unable to connect to the AFK Mode server. Make sure VS Code is running
-          and you&apos;re on the same network.
+          Unable to connect to the AFK Mode server. Make sure VS Code is running and you&apos;re on
+          the same network.
         </p>
         <button
           onClick={() => window.location.reload()}
@@ -97,9 +91,7 @@ function AppInner() {
       <main className="flex-1 overflow-hidden">
         {activeTab === "dashboard" && <Dashboard settings={settings} />}
         {activeTab === "history" && <SessionHistory settings={settings} />}
-        {activeTab === "settings" && (
-          <Settings settings={settings} onUpdate={setSettings} />
-        )}
+        {activeTab === "settings" && <Settings settings={settings} onUpdate={setSettings} />}
       </main>
 
       {/* Tab Bar */}

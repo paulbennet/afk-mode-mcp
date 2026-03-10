@@ -9,7 +9,11 @@
     "build:server": "tsup src/server/index.ts --format esm --out-dir dist",
     "build:webapp": "vite build",
     "build": "pnpm build:webapp && pnpm build:server",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"*.{json,js,ts}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"*.{json,js,ts}\""
   },
   "keywords": [],
   "author": "",
@@ -24,6 +28,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@tailwindcss/vite": "^4.2.1",
     "@types/express": "^5.0.6",
     "@types/qrcode": "^1.5.6",
@@ -32,12 +37,18 @@
     "@types/web-push": "^3.6.4",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^5.1.4",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "prettier": "^3.8.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.2.1",
     "tsup": "^8.5.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
+    "typescript-eslint": "^8.57.0",
     "vite": "^7.3.1"
   }
 }

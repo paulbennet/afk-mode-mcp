@@ -25,8 +25,7 @@ export function SessionHistory({ settings }: Props) {
         !search ||
         entry.summary.toLowerCase().includes(search.toLowerCase()) ||
         (entry.detail ?? "").toLowerCase().includes(search.toLowerCase());
-      const matchesCategory =
-        categoryFilter === "all" || entry.category === categoryFilter;
+      const matchesCategory = categoryFilter === "all" || entry.category === categoryFilter;
       return matchesSearch && matchesCategory;
     });
   }, [history, search, categoryFilter]);
@@ -43,21 +42,19 @@ export function SessionHistory({ settings }: Props) {
           className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div className="flex gap-1.5 overflow-x-auto">
-          {["all", "info", "warning", "error", "success", "milestone"].map(
-            (cat) => (
-              <button
-                key={cat}
-                onClick={() => setCategoryFilter(cat)}
-                className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-                  categoryFilter === cat
-                    ? "bg-blue-600 text-white"
-                    : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-                }`}
-              >
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </button>
-            ),
-          )}
+          {["all", "info", "warning", "error", "success", "milestone"].map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setCategoryFilter(cat)}
+              className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
+                categoryFilter === cat
+                  ? "bg-blue-600 text-white"
+                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
+              }`}
+            >
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -71,11 +68,7 @@ export function SessionHistory({ settings }: Props) {
         ) : (
           <div className="space-y-2">
             {filtered.map((entry) => (
-              <ProgressEntry
-                key={entry.id}
-                entry={entry}
-                verbosity={settings.verbosity}
-              />
+              <ProgressEntry key={entry.id} entry={entry} verbosity={settings.verbosity} />
             ))}
           </div>
         )}

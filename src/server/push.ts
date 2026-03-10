@@ -13,10 +13,7 @@ export function initPush(): void {
   }
 }
 
-export async function sendPushNotification(
-  title: string,
-  body: string
-): Promise<boolean> {
+export async function sendPushNotification(title: string, body: string): Promise<boolean> {
   if (!vapidConfigured) return false;
 
   const session = getSession();

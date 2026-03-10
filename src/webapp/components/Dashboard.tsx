@@ -7,8 +7,7 @@ interface Props {
 }
 
 export function Dashboard({ settings }: Props) {
-  const { afkMode, setAfkMode, progressUpdates, connectionState } =
-    useWebSocket();
+  const { afkMode, setAfkMode, progressUpdates, connectionState } = useWebSocket();
 
   return (
     <div className="flex flex-col h-full">
@@ -16,13 +15,9 @@ export function Dashboard({ settings }: Props) {
       <div className="px-4 py-4 border-b border-slate-200 dark:border-slate-800">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
-              AFK Mode
-            </h2>
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">AFK Mode</h2>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {afkMode
-                ? "Copilot will route interactions here"
-                : "Copilot uses VS Code chat"}
+              {afkMode ? "Copilot will route interactions here" : "Copilot uses VS Code chat"}
             </p>
           </div>
           <button
@@ -59,11 +54,7 @@ export function Dashboard({ settings }: Props) {
         ) : (
           <div className="space-y-2">
             {progressUpdates.map((entry) => (
-              <ProgressEntry
-                key={entry.id}
-                entry={entry}
-                verbosity={settings.verbosity}
-              />
+              <ProgressEntry key={entry.id} entry={entry} verbosity={settings.verbosity} />
             ))}
           </div>
         )}

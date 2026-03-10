@@ -4,25 +4,25 @@ import tailwindcss from "@tailwindcss/vite";
 import path from "path";
 
 export default defineConfig({
-    plugins: [react(), tailwindcss()],
-    root: "src/webapp",
-    build: {
-        outDir: path.resolve(__dirname, "dist/webapp"),
-        emptyOutDir: true,
-        rollupOptions: {
-            input: {
-                main: path.resolve(__dirname, "src/webapp/index.html"),
-                sw: path.resolve(__dirname, "src/webapp/sw.ts"),
-            },
-            output: {
-                entryFileNames: (chunkInfo) => {
-                    if (chunkInfo.name === "sw") return "sw.js";
-                    return "assets/[name]-[hash].js";
-                },
-            },
+  plugins: [react(), tailwindcss()],
+  root: "src/webapp",
+  build: {
+    outDir: path.resolve(__dirname, "dist/webapp"),
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        main: path.resolve(__dirname, "src/webapp/index.html"),
+        sw: path.resolve(__dirname, "src/webapp/sw.ts"),
+      },
+      output: {
+        entryFileNames: (chunkInfo) => {
+          if (chunkInfo.name === "sw") return "sw.js";
+          return "assets/[name]-[hash].js";
         },
+      },
     },
-    server: {
-        port: 5173,
-    },
+  },
+  server: {
+    port: 5173,
+  },
 });

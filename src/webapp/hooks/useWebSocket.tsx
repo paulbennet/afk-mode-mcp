@@ -32,15 +32,11 @@ const WebSocketContext = createContext<WebSocketContextValue | null>(null);
 export function WebSocketProvider({ children }: { children: ReactNode }) {
   const wsRef = useRef<WebSocket | null>(null);
   const reconnectTicketRef = useRef<string | null>(null);
-  const [connectionState, setConnectionState] =
-    useState<ConnectionState>("connecting");
+  const [connectionState, setConnectionState] = useState<ConnectionState>("connecting");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [afkMode, setAfkModeState] = useState(false);
-  const [progressUpdates, setProgressUpdates] = useState<
-    ProgressUpdateMessage[]
-  >([]);
-  const [pendingDecision, setPendingDecision] =
-    useState<DecisionRequestMessage | null>(null);
+  const [progressUpdates, setProgressUpdates] = useState<ProgressUpdateMessage[]>([]);
+  const [pendingDecision, setPendingDecision] = useState<DecisionRequestMessage | null>(null);
 
   const sendMessage = useCallback((msg: ClientMessage) => {
     const ws = wsRef.current;
@@ -124,18 +120,14 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
           reconnectTicketRef.current = msg.ticket;
           break;
 
-        case "progress_update":
+        case "progress_update": {
           setProgressUpdates((prev) => [msg, ...prev]);
           // Persist to localStorage
-          const history = JSON.parse(
-            localStorage.getItem("afk_progress_history") || "[]",
-          );
+          const history = JSON.parse(localStorage.getItem("afk_progress_history") || "[]");
           history.unshift(msg);
-          localStorage.setItem(
-            "afk_progress_history",
-            JSON.stringify(history.slice(0, 500)),
-          );
+          localStorage.setItem("afk_progress_history", JSON.stringify(history.slice(0, 500)));
           break;
+        }
 
         case "decision_request":
           setPendingDecision(msg);
@@ -154,9 +146,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
   // Load persisted progress on mount
   useEffect(() => {
     try {
-      const stored = JSON.parse(
-        localStorage.getItem("afk_progress_history") || "[]",
-      );
+      const stored = JSON.parse(localStorage.getItem("afk_progress_history") || "[]");
       if (stored.length > 0) {
         setProgressUpdates(stored);
       }

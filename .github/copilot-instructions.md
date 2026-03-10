@@ -8,6 +8,7 @@ AFK Mode is a single Node.js process serving two roles simultaneously:
 - **Web App Server** (Express 5 HTTP + `ws` WebSocket) — serves a React PWA for mobile
 
 Code is split into three areas:
+
 - `src/server/` — Node.js backend (MCP tools, WebSocket, push notifications, session state)
 - `src/webapp/` — React 19 frontend (components, hooks, service worker)
 - `src/shared/` — Types shared between server and webapp
@@ -39,6 +40,10 @@ pnpm install          # Install dependencies
 pnpm build            # Build webapp (Vite) then server (tsup)
 pnpm dev:server       # Run server with tsx hot reload
 pnpm dev:webapp       # Run Vite dev server on port 5173
+pnpm lint             # Check for lint errors
+pnpm lint:fix         # Auto-fix lint errors
+pnpm format           # Format all source files with Prettier
+pnpm format:check     # Check formatting without writing
 ```
 
 Build order matters: webapp builds first into `dist/webapp/`, then tsup bundles the server into `dist/index.js` (without `--clean`, to preserve the webapp output).
@@ -51,6 +56,14 @@ Build order matters: webapp builds first into `dist/webapp/`, then tsup bundles 
 - **Push notifications** are optional — enabled only when `AFK_PUSH_VAPID_*` env vars are set
 - **Service worker** (`sw.ts`) is built as a separate Vite entry point, output as `dist/webapp/sw.js`
 - **Tailwind CSS 4** via `@tailwindcss/vite` plugin — no `tailwind.config.js`, use `@import "tailwindcss"` in CSS
+
+## Linting & Formatting
+
+- **ESLint** (flat config in `eslint.config.js`) — TypeScript strict + React Hooks rules
+- **Prettier** (config in `.prettierrc`) — code formatting for TS, TSX, CSS, JSON
+- **eslint-config-prettier** disables ESLint rules that conflict with Prettier
+- After editing any source file, run `pnpm lint:fix` then `pnpm format` to fix lint errors and format the code
+- Before committing, ensure `pnpm lint` and `pnpm format:check` pass with no errors
 
 ## Gotchas
 

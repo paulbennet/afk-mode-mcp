@@ -57,8 +57,8 @@ export function initWebSocket(server: HttpServer): WebSocketServer {
       return;
     }
 
-    wss!.handleUpgrade(req, socket, head, (ws) => {
-      wss!.emit("connection", ws, req);
+    wss?.handleUpgrade(req, socket, head, (ws) => {
+      wss?.emit("connection", ws, req);
     });
   });
 

@@ -22,9 +22,7 @@ export function DiffViewer({ diff }: Props) {
               key={`before-${i}`}
               className="px-3 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-400"
             >
-              <span className="select-none text-red-400 dark:text-red-600 mr-2">
-                -
-              </span>
+              <span className="select-none text-red-400 dark:text-red-600 mr-2">-</span>
               {line}
             </div>
           ))}
@@ -33,9 +31,7 @@ export function DiffViewer({ diff }: Props) {
               key={`after-${i}`}
               className="px-3 bg-green-50 dark:bg-green-950/50 text-green-700 dark:text-green-400"
             >
-              <span className="select-none text-green-400 dark:text-green-600 mr-2">
-                +
-              </span>
+              <span className="select-none text-green-400 dark:text-green-600 mr-2">+</span>
               {line}
             </div>
           ))}

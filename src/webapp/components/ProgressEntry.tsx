@@ -1,10 +1,7 @@
 import type { ProgressUpdateMessage } from "../../shared/types";
 import { useState } from "react";
 
-const categoryConfig: Record<
-  string,
-  { icon: string; color: string; bgColor: string }
-> = {
+const categoryConfig: Record<string, { icon: string; color: string; bgColor: string }> = {
   info: {
     icon: "ℹ️",
     color: "text-blue-600 dark:text-blue-400",
@@ -40,8 +37,7 @@ interface Props {
 export function ProgressEntry({ entry, verbosity }: Props) {
   const config = categoryConfig[entry.category] ?? categoryConfig.info;
   const [expanded, setExpanded] = useState(entry.category === "error");
-  const hasDetail =
-    entry.detail || entry.filesChanged.length > 0 || entry.toolsUsed.length > 0;
+  const hasDetail = entry.detail || entry.filesChanged.length > 0 || entry.toolsUsed.length > 0;
 
   const time = new Date(entry.timestamp).toLocaleTimeString([], {
     hour: "2-digit",
@@ -59,12 +55,8 @@ export function ProgressEntry({ entry, verbosity }: Props) {
         </span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
-            <p className={`font-medium text-sm ${config.color}`}>
-              {entry.summary}
-            </p>
-            <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0">
-              {time}
-            </span>
+            <p className={`font-medium text-sm ${config.color}`}>{entry.summary}</p>
+            <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0">{time}</span>
           </div>
 
           {/* Progress bar */}
@@ -95,11 +87,7 @@ export function ProgressEntry({ entry, verbosity }: Props) {
                 className="mt-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-1 min-h-[28px]"
                 aria-expanded={expanded}
               >
-                <span
-                  className={`transition-transform ${expanded ? "rotate-90" : ""}`}
-                >
-                  ▶
-                </span>
+                <span className={`transition-transform ${expanded ? "rotate-90" : ""}`}>▶</span>
                 Details
               </button>
               {expanded && (
@@ -107,14 +95,12 @@ export function ProgressEntry({ entry, verbosity }: Props) {
                   {entry.detail && <p>{entry.detail}</p>}
                   {entry.filesChanged.length > 0 && (
                     <p>
-                      <span className="font-medium">Files:</span>{" "}
-                      {entry.filesChanged.join(", ")}
+                      <span className="font-medium">Files:</span> {entry.filesChanged.join(", ")}
                     </p>
                   )}
                   {entry.toolsUsed.length > 0 && (
                     <p>
-                      <span className="font-medium">Tools:</span>{" "}
-                      {entry.toolsUsed.join(", ")}
+                      <span className="font-medium">Tools:</span> {entry.toolsUsed.join(", ")}
                     </p>
                   )}
                 </div>

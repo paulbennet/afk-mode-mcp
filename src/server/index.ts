@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url";
 import express from "express";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { initSession, getSession } from "./session.js";
+import { initSession } from "./session.js";
 import { initWebSocket } from "./websocket.js";
 import { initPush } from "./push.js";
 import { registerTools } from "./mcp-tools.js";
@@ -62,8 +62,7 @@ async function main(): Promise<void> {
 
     // Construct web app URL
     const localIp = getLocalIp();
-    const getWebAppUrl = () =>
-        `http://${localIp}:${port}/?token=${session.sessionToken}`;
+    const getWebAppUrl = () => `http://${localIp}:${port}/?token=${session.sessionToken}`;
 
     // ── MCP Server (stdio) ──
     const mcpServer = new McpServer({
@@ -78,16 +77,14 @@ async function main(): Promise<void> {
         httpServer.on("error", (err: NodeJS.ErrnoException) => {
             if (err.code === "EADDRINUSE") {
                 process.stderr.write(
-                    `\nError: Port ${port} is already in use. Set AFK_PORT environment variable to use a different port.\n`
+                    `\nError: Port ${port} is already in use. Set AFK_PORT environment variable to use a different port.\n`,
                 );
                 process.exit(1);
             }
             reject(err);
         });
         httpServer.listen(port, () => {
-            process.stderr.write(
-                `\nAFK Mode web server running at http://${localIp}:${port}\n`
-            );
+            process.stderr.write(`\nAFK Mode web server running at http://${localIp}:${port}\n`);
             process.stderr.write(`Session ID: ${session.sessionId}\n`);
             process.stderr.write(`Connect URL: ${getWebAppUrl()}\n\n`);
             resolve();

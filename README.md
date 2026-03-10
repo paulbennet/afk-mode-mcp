@@ -178,6 +178,12 @@ pnpm build
 
 # Start production server
 pnpm start
+
+# Lint and format
+pnpm lint             # Check for lint errors
+pnpm lint:fix         # Auto-fix lint errors
+pnpm format           # Format all source files
+pnpm format:check     # Check formatting without writing
 ```
 
 ## Tech Stack
@@ -185,5 +191,7 @@ pnpm start
 - **Server**: Node.js, Express 5, WebSocket (`ws`), `@modelcontextprotocol/sdk`
 - **Web App**: React 19, Vite 7, Tailwind CSS 4
 - **Build**: tsup (server), Vite (webapp)
+- **Lint**: ESLint 10 with `typescript-eslint` + React Hooks plugin
+- **Format**: Prettier
 - **Push**: `web-push` with VAPID
 - **QR**: `qrcode` (data-URI PNG)

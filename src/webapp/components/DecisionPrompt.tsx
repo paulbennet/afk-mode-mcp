@@ -33,8 +33,7 @@ export function DecisionPrompt() {
 
   if (!pendingDecision) return null;
 
-  const { id, prompt, decisionType, options, diff, timeoutSeconds } =
-    pendingDecision;
+  const { id, prompt, decisionType, options, diff, timeoutSeconds } = pendingDecision;
   const progressPct = (timeLeft / timeoutSeconds) * 100;
 
   const formatTime = (s: number) => {
@@ -69,9 +68,7 @@ export function DecisionPrompt() {
             </span>
             <span
               className={`text-sm font-mono ${
-                timeLeft < 30
-                  ? "text-red-500"
-                  : "text-slate-500 dark:text-slate-400"
+                timeLeft < 30 ? "text-red-500" : "text-slate-500 dark:text-slate-400"
               }`}
             >
               {formatTime(timeLeft)}
@@ -79,9 +76,7 @@ export function DecisionPrompt() {
           </div>
 
           {/* Prompt */}
-          <p className="text-base font-medium text-slate-900 dark:text-slate-100 mb-5">
-            {prompt}
-          </p>
+          <p className="text-base font-medium text-slate-900 dark:text-slate-100 mb-5">{prompt}</p>
 
           {/* Decision UI based on type */}
           {decisionType === "confirm" && (
