@@ -1,7 +1,7 @@
 /// <reference lib="webworker" />
 declare const self: ServiceWorkerGlobalScope;
 
-const CACHE_NAME = "afk-mode-v1";
+const CACHE_NAME = "afk-mode-mcp-v1";
 
 // Install: cache static assets
 self.addEventListener("install", (event) => {
@@ -62,4 +62,4 @@ self.addEventListener("notificationclick", (event) => {
   );
 });
 
-export {};
+export { };

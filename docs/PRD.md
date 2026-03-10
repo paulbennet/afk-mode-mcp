@@ -283,10 +283,10 @@ The MCP server accepts configuration via its MCP server definition in VS Code se
 ```jsonc
 {
   "servers": {
-    "afk-mode": {
+    "afk-mode-mcp": {
       "type": "stdio",
       "command": "node",
-      "args": ["path/to/afk-mode/dist/server.js"],
+      "args": ["path/to/afk-mode-mcp/dist/server.js"],
       "env": {
         "AFK_PORT": "7842", // Web server port (default: auto)
         "AFK_DEFAULT_TIMEOUT": "300", // Default decision timeout in seconds
@@ -304,7 +304,7 @@ The MCP server accepts configuration via its MCP server definition in VS Code se
 ## 8. Project Structure
 
 ```
-afk-mode/
+afk-mode-mcp/
 ├── package.json
 ├── tsconfig.json
 ├── vite.config.ts                  # Builds the React web app

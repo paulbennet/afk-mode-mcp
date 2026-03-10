@@ -1,10 +1,10 @@
 {
-  "name": "afk-mode",
+  "name": "afk-mode-mcp",
   "version": "1.0.0",
   "description": "AFK Mode — Bridge VS Code Copilot and mobile web app via MCP server",
   "type": "module",
   "bin": {
-    "afk-mode": "dist/index.js"
+    "afk-mode-mcp": "dist/index.js"
   },
   "files": [
     "dist/"

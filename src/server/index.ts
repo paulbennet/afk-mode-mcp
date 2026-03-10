@@ -67,7 +67,7 @@ async function main(): Promise<void> {
 
   // ── MCP Server (stdio) ──
   const mcpServer = new McpServer({
-    name: "afk-mode",
+    name: "afk-mode-mcp",
     version: "1.0.0",
   });
 

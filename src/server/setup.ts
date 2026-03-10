@@ -26,7 +26,7 @@ export async function runSetup(): Promise<void> {
   const serverEntry = {
     type: "stdio" as const,
     command: "npx",
-    args: ["-y", "afk-mode"],
+    args: ["-y", "afk-mode-mcp"],
     env,
   };
 
@@ -50,13 +50,13 @@ export async function runSetup(): Promise<void> {
   }
 
   // Check if already configured
-  if (config.servers["afk-mode"]) {
-    process.stderr.write("Updating existing afk-mode entry in .vscode/mcp.json\n");
+  if (config.servers["afk-mode-mcp"]) {
+    process.stderr.write("Updating existing afk-mode-mcp entry in .vscode/mcp.json\n");
   } else {
-    process.stderr.write("Adding afk-mode to .vscode/mcp.json\n");
+    process.stderr.write("Adding afk-mode-mcp to .vscode/mcp.json\n");
   }
 
-  config.servers["afk-mode"] = serverEntry;
+  config.servers["afk-mode-mcp"] = serverEntry;
 
   // Write the file
   if (!existsSync(vscodeDir)) {

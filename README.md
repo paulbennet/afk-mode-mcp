@@ -11,7 +11,7 @@ When Copilot's agent mode runs long tasks, it frequently pauses for user input. 
 Run this in your project folder:
 
 ```bash
-npx afk-mode --setup
+npx afk-mode-mcp --setup
 ```
 
 This creates `.vscode/mcp.json` — done. Copilot will start AFK Mode automatically when it needs it.
@@ -31,10 +31,10 @@ If you prefer to configure manually, add this to `.vscode/mcp.json` in your work
 ```json
 {
   "servers": {
-    "afk-mode": {
+    "afk-mode-mcp": {
       "type": "stdio",
       "command": "npx",
-      "args": ["-y", "afk-mode"],
+      "args": ["-y", "afk-mode-mcp"],
       "env": {
         "AFK_PORT": "7842"
       }
@@ -140,7 +140,7 @@ Since VAPID keys are generated per session (and push subscriptions are in-memory
 ## Development (for contributors)
 
 ```bash
-git clone <repo-url> && cd afk-mode
+git clone <repo-url> && cd afk-mode-mcp
 pnpm install
 
 # Run server with hot reload

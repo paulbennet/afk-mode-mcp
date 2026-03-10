@@ -50,7 +50,7 @@ Build order matters: webapp builds first into `dist/webapp/`, then tsup bundles 
 
 ## Packaging & Distribution
 
-- Published to npm as `afk-mode` — users install via `npx afk-mode --setup`
+- Published to npm as `afk-mode-mcp` — users install via `npx afk-mode-mcp --setup`
 - `bin` entry in package.json points to `dist/index.js` (with shebang added by tsup `--banner.js`)
 - `files` field limits the npm package to `dist/` only
 - `prepublishOnly` script runs `pnpm build` automatically before `npm publish`

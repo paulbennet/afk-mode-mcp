@@ -1,6 +1,6 @@
 {
     "servers": {
-        "afk-mode": {
+        "afk-mode-mcp": {
             "type": "stdio",
             "command": "node",
             "args": [

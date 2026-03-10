@@ -9,7 +9,7 @@ export function initPush(): void {
   // Push subscriptions are already in-memory (lost on restart), so ephemeral
   // keys are fine — the phone re-subscribes each session.
   const keys = webPush.generateVAPIDKeys();
-  webPush.setVapidDetails("mailto:afk-mode@localhost", keys.publicKey, keys.privateKey);
+  webPush.setVapidDetails("mailto:afk-mode-mcp@localhost", keys.publicKey, keys.privateKey);
   vapidPublicKey = keys.publicKey;
   vapidConfigured = true;
 }
