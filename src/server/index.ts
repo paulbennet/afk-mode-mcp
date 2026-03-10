@@ -77,7 +77,8 @@ async function main(): Promise<void> {
             process.stderr.write(
                 `\nAFK Mode web server running at http://${localIp}:${port}\n`
             );
-            process.stderr.write(`Session ID: ${session.sessionId}\n\n`);
+            process.stderr.write(`Session ID: ${session.sessionId}\n`);
+            process.stderr.write(`Connect URL: ${getWebAppUrl()}\n\n`);
             resolve();
         });
     });
