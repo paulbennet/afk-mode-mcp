@@ -14,13 +14,13 @@ Run this in your project folder:
 npx afk-mode-mcp --setup
 ```
 
-This creates `.vscode/mcp.json` — done. Copilot will start AFK Mode automatically when it needs it.
+This creates `.vscode/mcp.json` and `.github/prompts/afk-workflow.prompt.md` — done. Copilot will start AFK Mode automatically when it needs it.
 
 ### Usage
 
 1. Ask Copilot: _"Show me the AFK app link"_ → scan the QR code on your phone
 2. Toggle **AFK Mode on** in the app
-3. Walk away — Copilot sends progress and prompts to your phone
+3. Start a task with `/afk-workflow` — Copilot routes all progress and decisions to your phone
 
 Push notifications work automatically — no extra setup needed.
 
