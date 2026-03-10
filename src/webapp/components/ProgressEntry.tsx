@@ -1,31 +1,43 @@
-import type { ProgressUpdateMessage } from "../../shared/types";
 import { useState } from "react";
+import Box from "@mui/material/Box";
+import Paper from "@mui/material/Paper";
+import Typography from "@mui/material/Typography";
+import LinearProgress from "@mui/material/LinearProgress";
+import IconButton from "@mui/material/IconButton";
+import Collapse from "@mui/material/Collapse";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import InfoIcon from "@mui/icons-material/Info";
+import WarningIcon from "@mui/icons-material/Warning";
+import ErrorIcon from "@mui/icons-material/Error";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import FlagIcon from "@mui/icons-material/Flag";
+import type { ProgressUpdateMessage } from "../../shared/types";
 
-const categoryConfig: Record<string, { icon: string; color: string; bgColor: string }> = {
+const categoryConfig: Record<string, { icon: React.ReactNode; color: string; bgColor: string }> = {
   info: {
-    icon: "ℹ️",
-    color: "text-blue-600 dark:text-blue-400",
-    bgColor: "bg-blue-50 dark:bg-blue-950",
+    icon: <InfoIcon fontSize="small" color="info" />,
+    color: "info.main",
+    bgColor: "info.50",
   },
   warning: {
-    icon: "⚠️",
-    color: "text-yellow-600 dark:text-yellow-400",
-    bgColor: "bg-yellow-50 dark:bg-yellow-950",
+    icon: <WarningIcon fontSize="small" color="warning" />,
+    color: "warning.main",
+    bgColor: "warning.50",
   },
   error: {
-    icon: "❌",
-    color: "text-red-600 dark:text-red-400",
-    bgColor: "bg-red-50 dark:bg-red-950",
+    icon: <ErrorIcon fontSize="small" color="error" />,
+    color: "error.main",
+    bgColor: "error.50",
   },
   success: {
-    icon: "✅",
-    color: "text-green-600 dark:text-green-400",
-    bgColor: "bg-green-50 dark:bg-green-950",
+    icon: <CheckCircleIcon fontSize="small" color="success" />,
+    color: "success.main",
+    bgColor: "success.50",
   },
   milestone: {
-    icon: "🎯",
-    color: "text-purple-600 dark:text-purple-400",
-    bgColor: "bg-purple-50 dark:bg-purple-950",
+    icon: <FlagIcon fontSize="small" color="secondary" />,
+    color: "secondary.main",
+    bgColor: "secondary.50",
   },
 };
 
@@ -45,70 +57,80 @@ export function ProgressEntry({ entry, verbosity }: Props) {
     second: "2-digit",
   });
 
+  const progressPct = entry.progress ? (entry.progress.current / entry.progress.total) * 100 : 0;
+
   return (
-    <div
-      className={`rounded-lg border p-3 ${config.bgColor} border-slate-200 dark:border-slate-700`}
-    >
-      <div className="flex items-start gap-2">
-        <span className="text-lg flex-shrink-0" aria-hidden="true">
-          {config.icon}
-        </span>
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center justify-between gap-2">
-            <p className={`font-medium text-sm ${config.color}`}>{entry.summary}</p>
-            <span className="text-xs text-slate-400 dark:text-slate-500 flex-shrink-0">{time}</span>
-          </div>
+    <Paper variant="outlined" sx={{ p: 1.5 }}>
+      <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1 }}>
+        <Box sx={{ flexShrink: 0, mt: 0.25 }}>{config.icon}</Box>
+        <Box sx={{ flex: 1, minWidth: 0 }}>
+          <Box
+            sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1 }}
+          >
+            <Typography variant="body2" fontWeight={600} sx={{ color: config.color }}>
+              {entry.summary}
+            </Typography>
+            <Typography variant="caption" color="text.disabled" sx={{ flexShrink: 0 }}>
+              {time}
+            </Typography>
+          </Box>
 
           {/* Progress bar */}
           {entry.progress && (
-            <div className="mt-2">
-              <div className="flex justify-between text-xs text-slate-500 dark:text-slate-400 mb-1">
-                <span>{entry.progress.label}</span>
-                <span>
+            <Box sx={{ mt: 1 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 0.5 }}>
+                <Typography variant="caption" color="text.secondary">
+                  {entry.progress.label}
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
                   {entry.progress.current} / {entry.progress.total}
-                </span>
-              </div>
-              <div className="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-500 rounded-full transition-all duration-300"
-                  style={{
-                    width: `${(entry.progress.current / entry.progress.total) * 100}%`,
-                  }}
-                />
-              </div>
-            </div>
+                </Typography>
+              </Box>
+              <LinearProgress variant="determinate" value={progressPct} sx={{ borderRadius: 1 }} />
+            </Box>
           )}
 
           {/* Expandable detail section */}
           {hasDetail && verbosity === "detailed" && (
             <>
-              <button
+              <IconButton
+                size="small"
                 onClick={() => setExpanded(!expanded)}
-                className="mt-1 text-xs text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 flex items-center gap-1 min-h-[28px]"
                 aria-expanded={expanded}
+                aria-label="Toggle details"
+                sx={{ mt: 0.5, p: 0.25 }}
               >
-                <span className={`transition-transform ${expanded ? "rotate-90" : ""}`}>▶</span>
-                Details
-              </button>
-              {expanded && (
-                <div className="mt-2 space-y-1 text-xs text-slate-600 dark:text-slate-400">
-                  {entry.detail && <p>{entry.detail}</p>}
+                <ExpandMoreIcon
+                  fontSize="small"
+                  sx={{
+                    transform: expanded ? "rotate(180deg)" : "rotate(0deg)",
+                    transition: "transform 0.2s",
+                  }}
+                />
+              </IconButton>
+              <Collapse in={expanded}>
+                <Box sx={{ mt: 1, display: "flex", flexDirection: "column", gap: 0.5 }}>
+                  {entry.detail && (
+                    <Typography variant="caption" color="text.secondary">
+                      {entry.detail}
+                    </Typography>
+                  )}
                   {entry.filesChanged.length > 0 && (
-                    <p>
-                      <span className="font-medium">Files:</span> {entry.filesChanged.join(", ")}
-                    </p>
+                    <Typography variant="caption" color="text.secondary">
+                      <strong>Files:</strong> {entry.filesChanged.join(", ")}
+                    </Typography>
                   )}
                   {entry.toolsUsed.length > 0 && (
-                    <p>
-                      <span className="font-medium">Tools:</span> {entry.toolsUsed.join(", ")}
-                    </p>
+                    <Typography variant="caption" color="text.secondary">
+                      <strong>Tools:</strong> {entry.toolsUsed.join(", ")}
+                    </Typography>
                   )}
-                </div>
-              )}
+                </Box>
+              </Collapse>
             </>
           )}
-        </div>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Paper>
   );
 }

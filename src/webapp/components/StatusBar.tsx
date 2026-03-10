@@ -1,3 +1,7 @@
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import Typography from "@mui/material/Typography";
+import FiberManualRecordIcon from "@mui/icons-material/FiberManualRecord";
 import { useWebSocket } from "../hooks/useWebSocket";
 
 export function StatusBar() {
@@ -5,42 +9,80 @@ export function StatusBar() {
 
   const isConnected = connectionState === "connected";
 
+  const statusColor = isConnected
+    ? "success"
+    : connectionState === "connecting"
+      ? "warning"
+      : "error";
+  const statusLabel = isConnected
+    ? "Connected"
+    : connectionState === "connecting"
+      ? "Connecting…"
+      : "Disconnected";
+
   return (
-    <div className="flex items-center gap-3 px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 text-sm">
-      {/* Connection indicator */}
-      <div className="flex items-center gap-1.5">
-        <span
-          className={`inline-block w-2.5 h-2.5 rounded-full ${
-            isConnected
-              ? "bg-green-500"
-              : connectionState === "connecting"
-                ? "bg-yellow-500 animate-pulse"
-                : "bg-red-500"
-          }`}
-          aria-label={`Connection: ${connectionState}`}
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        gap: 1.5,
+        px: 2,
+        py: 1,
+        bgcolor: "background.paper",
+        borderBottom: 1,
+        borderColor: "divider",
+      }}
+    >
+      <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
+        <FiberManualRecordIcon
+          color={statusColor}
+          sx={{
+            fontSize: 12,
+            ...(connectionState === "connecting" && {
+              animation: "pulse 1.5s ease-in-out infinite",
+              "@keyframes pulse": {
+                "0%, 100%": { opacity: 1 },
+                "50%": { opacity: 0.4 },
+              },
+            }),
+          }}
         />
-        <span className="text-slate-600 dark:text-slate-400">
-          {isConnected
-            ? "Connected"
-            : connectionState === "connecting"
-              ? "Connecting…"
-              : "Disconnected"}
-        </span>
-      </div>
+        <Typography variant="body2" color="text.secondary">
+          {statusLabel}
+        </Typography>
+      </Box>
 
-      {/* AFK indicator */}
       {afkMode && (
-        <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs font-medium animate-pulse-afk">
-          AFK
-        </span>
+        <Chip
+          label="AFK"
+          size="small"
+          color="primary"
+          sx={{
+            fontWeight: 600,
+            animation: "pulse-afk 2s ease-in-out infinite",
+            "@keyframes pulse-afk": {
+              "0%, 100%": { opacity: 1 },
+              "50%": { opacity: 0.5 },
+            },
+          }}
+        />
       )}
 
-      {/* Session ID */}
       {sessionId && (
-        <span className="ml-auto text-slate-400 dark:text-slate-600 text-xs font-mono truncate max-w-[120px]">
+        <Typography
+          variant="caption"
+          color="text.disabled"
+          sx={{
+            ml: "auto",
+            fontFamily: "monospace",
+            maxWidth: 120,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          }}
+        >
           {sessionId.slice(0, 8)}
-        </span>
+        </Typography>
       )}
-    </div>
+    </Box>
   );
 }

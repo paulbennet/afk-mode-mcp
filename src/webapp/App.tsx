@@ -1,4 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import BottomNavigation from "@mui/material/BottomNavigation";
+import BottomNavigationAction from "@mui/material/BottomNavigationAction";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import HistoryIcon from "@mui/icons-material/History";
+import SettingsIcon from "@mui/icons-material/Settings";
+import PowerOffIcon from "@mui/icons-material/PowerOff";
 import { WebSocketProvider, useWebSocket } from "./hooks/useWebSocket";
 import { useNotifications } from "./hooks/useNotifications";
 import { StatusBar } from "./components/StatusBar";
@@ -6,6 +18,7 @@ import { Dashboard } from "./components/Dashboard";
 import { SessionHistory } from "./components/SessionHistory";
 import { Settings } from "./components/Settings";
 import { DecisionPrompt } from "./components/DecisionPrompt";
+import { buildTheme } from "./theme";
 import { DEFAULT_SETTINGS, type AppSettings } from "../shared/types";
 
 type Tab = "dashboard" | "history" | "settings";
@@ -29,97 +42,94 @@ function AppInner() {
     localStorage.setItem("afk_settings", JSON.stringify(settings));
   }, [settings]);
 
-  // Apply theme
-  useEffect(() => {
-    const root = document.documentElement;
-    if (settings.theme === "dark") {
-      root.classList.add("dark");
-    } else if (settings.theme === "light") {
-      root.classList.remove("dark");
-    } else {
-      // System preference
-      const mq = window.matchMedia("(prefers-color-scheme: dark)");
-      const apply = () => {
-        if (mq.matches) root.classList.add("dark");
-        else root.classList.remove("dark");
-      };
-      apply();
-      mq.addEventListener("change", apply);
-      return () => mq.removeEventListener("change", apply);
-    }
+  // Resolve effective color mode
+  const colorMode = useMemo(() => {
+    if (settings.theme === "dark") return "dark";
+    if (settings.theme === "light") return "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }, [settings.theme]);
+
+  const theme = useMemo(() => buildTheme(colorMode), [colorMode]);
 
   // Connection screen
   if (connectionState === "connecting") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4">
-        <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin" />
-        <p className="text-sm text-slate-500 dark:text-slate-400">Connecting to AFK Mode server…</p>
-      </div>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            gap: 2,
+          }}
+        >
+          <CircularProgress />
+          <Typography variant="body2" color="text.secondary">
+            Connecting to AFK Mode server…
+          </Typography>
+        </Box>
+      </ThemeProvider>
     );
   }
 
   if (connectionState === "disconnected") {
     return (
-      <div className="flex flex-col items-center justify-center min-h-screen gap-4 px-6">
-        <span className="text-5xl">🔌</span>
-        <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Disconnected</h1>
-        <p className="text-sm text-slate-500 dark:text-slate-400 text-center">
-          Unable to connect to the AFK Mode server. Make sure VS Code is running and you&apos;re on
-          the same network.
-        </p>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm transition-colors"
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "100vh",
+            gap: 2,
+            px: 3,
+          }}
         >
-          Retry
-        </button>
-      </div>
+          <PowerOffIcon sx={{ fontSize: 64, color: "text.secondary" }} />
+          <Typography variant="h6">Disconnected</Typography>
+          <Typography variant="body2" color="text.secondary" textAlign="center">
+            Unable to connect to the AFK Mode server. Make sure VS Code is running and you&apos;re
+            on the same network.
+          </Typography>
+          <Button variant="contained" onClick={() => window.location.reload()}>
+            Retry
+          </Button>
+        </Box>
+      </ThemeProvider>
     );
   }
 
-  const tabs: { id: Tab; label: string; icon: string }[] = [
-    { id: "dashboard", label: "Dashboard", icon: "📊" },
-    { id: "history", label: "History", icon: "📜" },
-    { id: "settings", label: "Settings", icon: "⚙️" },
-  ];
-
   return (
-    <div className="flex flex-col h-screen">
-      <StatusBar />
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Box sx={{ display: "flex", flexDirection: "column", height: "100vh" }}>
+        <StatusBar />
 
-      <main className="flex-1 overflow-hidden">
-        {activeTab === "dashboard" && <Dashboard settings={settings} />}
-        {activeTab === "history" && <SessionHistory settings={settings} />}
-        {activeTab === "settings" && <Settings settings={settings} onUpdate={setSettings} />}
-      </main>
+        <Box component="main" sx={{ flex: 1, overflow: "hidden" }}>
+          {activeTab === "dashboard" && <Dashboard settings={settings} />}
+          {activeTab === "history" && <SessionHistory settings={settings} />}
+          {activeTab === "settings" && <Settings settings={settings} onUpdate={setSettings} />}
+        </Box>
 
-      {/* Tab Bar */}
-      <nav className="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 safe-area-bottom">
-        <div className="flex">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-xs transition-colors ${
-                activeTab === tab.id
-                  ? "text-blue-600 dark:text-blue-400"
-                  : "text-slate-400 dark:text-slate-500"
-              }`}
-              aria-current={activeTab === tab.id ? "page" : undefined}
-            >
-              <span className="text-lg" aria-hidden="true">
-                {tab.icon}
-              </span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
-      </nav>
+        <BottomNavigation
+          value={activeTab}
+          onChange={(_, newValue: Tab) => setActiveTab(newValue)}
+          showLabels
+          sx={{ borderTop: 1, borderColor: "divider" }}
+        >
+          <BottomNavigationAction value="dashboard" label="Dashboard" icon={<DashboardIcon />} />
+          <BottomNavigationAction value="history" label="History" icon={<HistoryIcon />} />
+          <BottomNavigationAction value="settings" label="Settings" icon={<SettingsIcon />} />
+        </BottomNavigation>
 
-      {/* Decision Prompt Overlay */}
-      <DecisionPrompt />
-    </div>
+        <DecisionPrompt />
+      </Box>
+    </ThemeProvider>
   );
 }
 
