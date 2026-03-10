@@ -1,1 +1,4 @@
 .playwright*
+node_modules/
+dist/
+*.tsbuildinfo

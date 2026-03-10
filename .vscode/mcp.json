@@ -1,0 +1,14 @@
+{
+    "servers": {
+        "afk-mode": {
+            "type": "stdio",
+            "command": "node",
+            "args": [
+                "dist/index.js"
+            ],
+            "env": {
+                "AFK_PORT": "7842"
+            }
+        }
+    }
+}
