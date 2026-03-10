@@ -3,7 +3,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { getSession, addProgressEntry, addPendingDecision } from "./session.js";
 import { generateQrMarkdown } from "./qr.js";
-import { sendProgressUpdate, sendDecisionRequest } from "./websocket.js";
+import { sendProgressUpdate, sendDecisionRequest, clearCurrentDecision } from "./websocket.js";
 import { sendPushNotification } from "./push.js";
 import type {
   ProgressUpdateMessage,
@@ -176,6 +176,7 @@ export function registerTools(server: McpServer, getWebAppUrl: () => string): vo
         const timer = setTimeout(() => {
           const session = getSession();
           session.pendingDecisions.delete(id);
+          clearCurrentDecision(id);
           resolve({ decision: args.defaultValue ?? null, timedOut: true });
         }, timeoutMs);
 

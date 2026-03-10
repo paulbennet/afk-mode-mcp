@@ -172,6 +172,14 @@ export function sendDecisionRequest(request: DecisionRequestMessage): void {
   }
 }
 
+/** Clear the current decision (e.g. on timeout) and advance the queue. */
+export function clearCurrentDecision(id: string): void {
+  if (currentDecisionId === id) {
+    currentDecisionId = null;
+    sendNextQueuedDecision();
+  }
+}
+
 function sendNextQueuedDecision(): void {
   const next = decisionSendQueue.shift();
   if (!next) {
