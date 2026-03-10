@@ -9,6 +9,7 @@ import { initSession } from "./session.js";
 import { initWebSocket } from "./websocket.js";
 import { initPush } from "./push.js";
 import { registerTools } from "./mcp-tools.js";
+import { runSetup } from "./setup.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -96,7 +97,15 @@ async function main(): Promise<void> {
   await mcpServer.connect(transport);
 }
 
-main().catch((err) => {
-  process.stderr.write(`Fatal error: ${err}\n`);
-  process.exit(1);
-});
+// ── CLI mode: handle --setup before starting MCP server ──
+if (process.argv.includes("--setup")) {
+  runSetup(process.argv).catch((err) => {
+    process.stderr.write(`Setup failed: ${err}\n`);
+    process.exit(1);
+  });
+} else {
+  main().catch((err) => {
+    process.stderr.write(`Fatal error: ${err}\n`);
+    process.exit(1);
+  });
+}

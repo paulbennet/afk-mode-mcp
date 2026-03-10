@@ -4,6 +4,51 @@
 
 When Copilot's agent mode runs long tasks, it frequently pauses for user input. If you step away, the session stalls. AFK Mode bridges Copilot and your phone through an MCP server — so you can watch progress, get notifications, and respond to prompts without being at your desk.
 
+## Quick Start
+
+### One-command setup
+
+Run this in your project folder:
+
+```bash
+npx afk-mode --setup
+```
+
+This creates `.vscode/mcp.json` — done. Copilot will start AFK Mode automatically when it needs it.
+
+### Usage
+
+1. Ask Copilot: _"Show me the AFK app link"_ → scan the QR code on your phone
+2. Toggle **AFK Mode on** in the app
+3. Walk away — Copilot sends progress and prompts to your phone
+
+### Want push notifications?
+
+```bash
+npx afk-mode --setup --vapid
+```
+
+This generates VAPID keys and configures push notifications so your phone gets alerts even when the browser tab is in the background.
+
+### Manual setup (alternative)
+
+If you prefer to configure manually, add this to `.vscode/mcp.json` in your workspace:
+
+```json
+{
+  "servers": {
+    "afk-mode": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "afk-mode"],
+      "env": {
+        "AFK_PORT": "7842"
+      }
+    }
+  }
+}
+```
+
 ## How It Works
 
 AFK Mode is a single Node.js process that serves two roles simultaneously:
@@ -19,49 +64,12 @@ AFK Mode is a single Node.js process that serves two roles simultaneously:
 └──────────────┘                └──────────────────────┘                  └──────────────┘
 ```
 
-### Flow
-
 1. Copilot starts the MCP server → HTTP/WebSocket server starts automatically on port 7842
 2. Ask Copilot _"Show me the AFK app link"_ → it calls `get_current_web_app_url` and renders a QR code
 3. Scan the QR code on your phone → the PWA connects via WebSocket
 4. Toggle **AFK Mode on** in the app → Copilot routes interactions through your phone
 5. Copilot sends progress updates and decision prompts to your phone in real time
 6. Toggle **AFK Mode off** → Copilot goes back to the normal VS Code chat panel
-
-## Setup
-
-### Prerequisites
-
-- Node.js 20+
-- pnpm
-
-### Install & Build
-
-```bash
-pnpm install
-pnpm build
-```
-
-### Configure VS Code
-
-Add to your workspace `.vscode/mcp.json` (already included):
-
-```json
-{
-  "servers": {
-    "afk-mode": {
-      "type": "stdio",
-      "command": "node",
-      "args": ["dist/index.js"],
-      "env": {
-        "AFK_PORT": "7842"
-      }
-    }
-  }
-}
-```
-
-Copilot will start the server automatically when it needs the MCP tools.
 
 ## MCP Tools
 
@@ -122,7 +130,17 @@ Push uses the **Web Push** standard with **VAPID** (Voluntary Application Server
 
 ### Enable push notifications
 
-Generate keys and pass them as environment variables:
+The easiest way is to use the setup command:
+
+```bash
+npx afk-mode --setup --vapid
+```
+
+This generates VAPID keys and writes them to your `.vscode/mcp.json` automatically.
+
+#### Manual VAPID setup
+
+Generate keys manually:
 
 ```bash
 npx web-push generate-vapid-keys
@@ -135,8 +153,8 @@ Then set them in your `.vscode/mcp.json`:
   "servers": {
     "afk-mode": {
       "type": "stdio",
-      "command": "node",
-      "args": ["dist/index.js"],
+      "command": "npx",
+      "args": ["-y", "afk-mode"],
       "env": {
         "AFK_PORT": "7842",
         "AFK_PUSH_VAPID_PUBLIC": "your-public-key",
@@ -164,9 +182,12 @@ Without VAPID keys, push is silently disabled — everything else works normally
 | `AFK_PUSH_VAPID_PUBLIC`  | _(none)_ | VAPID public key for push notifications  |
 | `AFK_PUSH_VAPID_PRIVATE` | _(none)_ | VAPID private key for push notifications |
 
-## Development
+## Development (for contributors)
 
 ```bash
+git clone <repo-url> && cd afk-mode
+pnpm install
+
 # Run server with hot reload
 pnpm dev:server
 

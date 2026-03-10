@@ -1,0 +1,15 @@
+# Source and config (not needed at runtime)
+src/
+tests/
+docs/
+.github/
+.vscode/
+
+# Dev config files
+tsconfig.json
+tsconfig.webapp.json
+vite.config.ts
+eslint.config.js
+.prettierrc
+.gitignore
+pnpm-lock.yaml

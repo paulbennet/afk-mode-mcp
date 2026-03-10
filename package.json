@@ -3,19 +3,35 @@
   "version": "1.0.0",
   "description": "AFK Mode — Bridge VS Code Copilot and mobile web app via MCP server",
   "type": "module",
+  "bin": {
+    "afk-mode": "dist/index.js"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "mcp",
+    "mcp-server",
+    "copilot",
+    "vscode",
+    "afk",
+    "remote",
+    "mobile",
+    "agent-mode"
+  ],
   "scripts": {
     "dev:server": "tsx src/server/index.ts",
     "dev:webapp": "vite",
-    "build:server": "tsup src/server/index.ts --format esm --out-dir dist",
+    "build:server": "tsup",
     "build:webapp": "vite build",
     "build": "pnpm build:webapp && pnpm build:server",
     "start": "node dist/index.js",
+    "prepublishOnly": "pnpm build",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"*.{json,js,ts}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"*.{json,js,ts}\""
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "packageManager": "pnpm@10.6.5",

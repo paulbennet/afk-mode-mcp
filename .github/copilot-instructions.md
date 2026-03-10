@@ -48,11 +48,22 @@ pnpm format:check     # Check formatting without writing
 
 Build order matters: webapp builds first into `dist/webapp/`, then tsup bundles the server into `dist/index.js` (without `--clean`, to preserve the webapp output).
 
+## Packaging & Distribution
+
+- Published to npm as `afk-mode` — users install via `npx afk-mode --setup`
+- `bin` entry in package.json points to `dist/index.js` (with shebang added by tsup `--banner.js`)
+- `files` field limits the npm package to `dist/` only
+- `prepublishOnly` script runs `pnpm build` automatically before `npm publish`
+- `.npmignore` excludes source, tests, and dev configs from the published package
+- `--setup` CLI flag writes `.vscode/mcp.json` instead of starting the MCP server
+- `--setup --vapid` also generates and includes VAPID keys for push notifications
+
 ## Key Patterns
 
 - **Session state** is an in-memory singleton in `session.ts` — no database
 - **WebSocket** enforces single-device connection with rotating reconnect tickets
 - **MCP tool definitions** use zod schemas in `mcp-tools.ts`
+- **CLI setup** (`setup.ts`) handles `--setup` flag to write `.vscode/mcp.json` for users
 - **Push notifications** are optional — enabled only when `AFK_PUSH_VAPID_*` env vars are set
 - **Service worker** (`sw.ts`) is built as a separate Vite entry point, output as `dist/webapp/sw.js`
 - **MUI (Material UI) 7** with Emotion — theme defined in `src/webapp/theme.ts`, dark/light mode via `ThemeProvider`
