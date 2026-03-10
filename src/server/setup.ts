@@ -13,17 +13,7 @@ interface McpConfig {
   >;
 }
 
-async function generateVapidKeys(): Promise<{ publicKey: string; privateKey: string } | null> {
-  try {
-    const webPush = await import("web-push");
-    return webPush.generateVAPIDKeys();
-  } catch {
-    return null;
-  }
-}
-
-export async function runSetup(args: string[]): Promise<void> {
-  const withVapid = args.includes("--vapid");
+export async function runSetup(): Promise<void> {
   const cwd = process.cwd();
   const vscodeDir = path.join(cwd, ".vscode");
   const mcpJsonPath = path.join(vscodeDir, "mcp.json");
@@ -32,19 +22,6 @@ export async function runSetup(args: string[]): Promise<void> {
   const env: Record<string, string> = {
     AFK_PORT: "7842",
   };
-
-  if (withVapid) {
-    const keys = await generateVapidKeys();
-    if (keys) {
-      env.AFK_PUSH_VAPID_PUBLIC = keys.publicKey;
-      env.AFK_PUSH_VAPID_PRIVATE = keys.privateKey;
-      process.stderr.write("Generated VAPID keys for push notifications.\n");
-    } else {
-      process.stderr.write(
-        "Warning: Could not generate VAPID keys. Push notifications will be disabled.\n",
-      );
-    }
-  }
 
   const serverEntry = {
     type: "stdio" as const,
@@ -99,9 +76,7 @@ export async function runSetup(args: string[]): Promise<void> {
     `   2. Ask Copilot: "Show me the AFK app link" → scan the QR code on your phone\n`,
   );
   process.stderr.write(`   3. Toggle AFK Mode on and walk away!\n\n`);
-
-  if (!withVapid) {
-    process.stderr.write(`   Optional: Re-run with --vapid to enable push notifications:\n`);
-    process.stderr.write(`   npx afk-mode --setup --vapid\n\n`);
-  }
+  process.stderr.write(
+    `   Push notifications are enabled automatically — no extra setup needed.\n\n`,
+  );
 }

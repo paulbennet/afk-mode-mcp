@@ -22,13 +22,7 @@ This creates `.vscode/mcp.json` — done. Copilot will start AFK Mode automatica
 2. Toggle **AFK Mode on** in the app
 3. Walk away — Copilot sends progress and prompts to your phone
 
-### Want push notifications?
-
-```bash
-npx afk-mode --setup --vapid
-```
-
-This generates VAPID keys and configures push notifications so your phone gets alerts even when the browser tab is in the background.
+Push notifications work automatically — no extra setup needed.
 
 ### Manual setup (alternative)
 
@@ -116,56 +110,19 @@ Includes a configurable timeout (default 5 minutes) with an optional default val
 
 ## Push Notifications
 
-Push notifications alert you on your phone even when the browser tab is in the background (e.g., for errors or pending decisions).
+Push notifications alert you on your phone even when the browser tab is in the background (e.g., for errors or pending decisions). They work out of the box — no configuration required.
 
-Push uses the **Web Push** standard with **VAPID** (Voluntary Application Server Identification). VAPID is an open W3C standard — no Google account, Firebase setup, or API keys required. Your keys are generated locally and the push payload is end-to-end encrypted.
+Push uses the **Web Push** standard with **VAPID** (Voluntary Application Server Identification). VAPID is an open W3C standard — no Google account, Firebase setup, or API keys required.
 
 ### How it works
 
-1. Server generates a VAPID key pair (once, reusable forever)
+1. Server auto-generates a VAPID key pair on each startup
 2. Client fetches the public key from `/api/vapid-key` and subscribes via the Push API
 3. Browser returns an FCM/Mozilla/Apple push endpoint — stored on the server
 4. Server sends encrypted payloads to the endpoint when needed
 5. Service worker receives the push and shows a system notification
 
-### Enable push notifications
-
-The easiest way is to use the setup command:
-
-```bash
-npx afk-mode --setup --vapid
-```
-
-This generates VAPID keys and writes them to your `.vscode/mcp.json` automatically.
-
-#### Manual VAPID setup
-
-Generate keys manually:
-
-```bash
-npx web-push generate-vapid-keys
-```
-
-Then set them in your `.vscode/mcp.json`:
-
-```json
-{
-  "servers": {
-    "afk-mode": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "afk-mode"],
-      "env": {
-        "AFK_PORT": "7842",
-        "AFK_PUSH_VAPID_PUBLIC": "your-public-key",
-        "AFK_PUSH_VAPID_PRIVATE": "your-private-key"
-      }
-    }
-  }
-}
-```
-
-Without VAPID keys, push is silently disabled — everything else works normally.
+Since VAPID keys are generated per session (and push subscriptions are in-memory), each developer runs an isolated instance — no shared secrets, no cross-talk between team members.
 
 ## Security
 
@@ -176,11 +133,9 @@ Without VAPID keys, push is silently disabled — everything else works normally
 
 ## Environment Variables
 
-| Variable                 | Default  | Description                              |
-| ------------------------ | -------- | ---------------------------------------- |
-| `AFK_PORT`               | `7842`   | HTTP/WebSocket server port               |
-| `AFK_PUSH_VAPID_PUBLIC`  | _(none)_ | VAPID public key for push notifications  |
-| `AFK_PUSH_VAPID_PRIVATE` | _(none)_ | VAPID private key for push notifications |
+| Variable   | Default | Description                |
+| ---------- | ------- | -------------------------- |
+| `AFK_PORT` | `7842`  | HTTP/WebSocket server port |
 
 ## Development (for contributors)
 

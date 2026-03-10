@@ -56,7 +56,6 @@ Build order matters: webapp builds first into `dist/webapp/`, then tsup bundles 
 - `prepublishOnly` script runs `pnpm build` automatically before `npm publish`
 - `.npmignore` excludes source, tests, and dev configs from the published package
 - `--setup` CLI flag writes `.vscode/mcp.json` instead of starting the MCP server
-- `--setup --vapid` also generates and includes VAPID keys for push notifications
 
 ## Key Patterns
 
@@ -64,7 +63,7 @@ Build order matters: webapp builds first into `dist/webapp/`, then tsup bundles 
 - **WebSocket** enforces single-device connection with rotating reconnect tickets
 - **MCP tool definitions** use zod schemas in `mcp-tools.ts`
 - **CLI setup** (`setup.ts`) handles `--setup` flag to write `.vscode/mcp.json` for users
-- **Push notifications** are optional — enabled only when `AFK_PUSH_VAPID_*` env vars are set
+- **Push notifications** use auto-generated VAPID keys (ephemeral, per session) — no env vars needed
 - **Service worker** (`sw.ts`) is built as a separate Vite entry point, output as `dist/webapp/sw.js`
 - **MUI (Material UI) 7** with Emotion — theme defined in `src/webapp/theme.ts`, dark/light mode via `ThemeProvider`
 

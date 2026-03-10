@@ -2,15 +2,20 @@ import webPush from "web-push";
 import { getSession } from "./session.js";
 
 let vapidConfigured = false;
+let vapidPublicKey: string | null = null;
 
 export function initPush(): void {
-  const publicKey = process.env.AFK_PUSH_VAPID_PUBLIC;
-  const privateKey = process.env.AFK_PUSH_VAPID_PRIVATE;
+  // Auto-generate VAPID keys each startup.
+  // Push subscriptions are already in-memory (lost on restart), so ephemeral
+  // keys are fine — the phone re-subscribes each session.
+  const keys = webPush.generateVAPIDKeys();
+  webPush.setVapidDetails("mailto:afk-mode@localhost", keys.publicKey, keys.privateKey);
+  vapidPublicKey = keys.publicKey;
+  vapidConfigured = true;
+}
 
-  if (publicKey && privateKey) {
-    webPush.setVapidDetails("mailto:afk-mode@localhost", publicKey, privateKey);
-    vapidConfigured = true;
-  }
+export function getVapidPublicKey(): string | null {
+  return vapidPublicKey;
 }
 
 export async function sendPushNotification(title: string, body: string): Promise<boolean> {

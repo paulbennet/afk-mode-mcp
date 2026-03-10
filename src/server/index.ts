@@ -7,7 +7,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { initSession } from "./session.js";
 import { initWebSocket } from "./websocket.js";
-import { initPush } from "./push.js";
+import { initPush, getVapidPublicKey } from "./push.js";
 import { registerTools } from "./mcp-tools.js";
 import { runSetup } from "./setup.js";
 
@@ -39,7 +39,7 @@ async function main(): Promise<void> {
 
   // API: expose VAPID public key for push subscriptions
   app.get("/api/vapid-key", (_req, res) => {
-    const key = process.env.AFK_PUSH_VAPID_PUBLIC;
+    const key = getVapidPublicKey();
     if (key) {
       res.json({ key });
     } else {
@@ -99,7 +99,7 @@ async function main(): Promise<void> {
 
 // ── CLI mode: handle --setup before starting MCP server ──
 if (process.argv.includes("--setup")) {
-  runSetup(process.argv).catch((err) => {
+  runSetup().catch((err) => {
     process.stderr.write(`Setup failed: ${err}\n`);
     process.exit(1);
   });
