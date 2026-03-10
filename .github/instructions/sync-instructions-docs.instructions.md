@@ -9,18 +9,21 @@ When source changes affect project structure, conventions, or capabilities, upda
 
 ## What to check after source changes
 
-| Change type                             | Update                                                                            |
-| --------------------------------------- | --------------------------------------------------------------------------------- |
-| New file/folder or removed file/folder  | `copilot-instructions.md` Architecture section, `README.md` if it lists structure |
-| New/changed import convention           | `copilot-instructions.md` Code Style section                                      |
-| New/changed naming pattern              | `copilot-instructions.md` Naming section                                          |
-| New dependency or removed dependency    | `README.md` Tech Stack section                                                    |
-| New/changed build script or build order | `copilot-instructions.md` Build & Run, `README.md` Setup/Development sections     |
-| New environment variable                | `copilot-instructions.md` Key Patterns, `README.md` Environment Variables table   |
-| New MCP tool or changed tool schema     | `README.md` MCP Tools section                                                     |
-| New gotcha or pitfall discovered        | `copilot-instructions.md` Gotchas section                                         |
-| New/changed web app feature             | `README.md` Web App Features section                                              |
-| Security model change                   | `README.md` Security section                                                      |
+| Change type                             | Update                                                                                                                      |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| New file/folder or removed file/folder  | `copilot-instructions.md` Architecture section, `README.md` if it lists structure                                           |
+| New/changed import convention           | `copilot-instructions.md` Code Style section                                                                                |
+| New/changed naming pattern              | `copilot-instructions.md` Naming section                                                                                    |
+| New dependency or removed dependency    | `README.md` Tech Stack section                                                                                              |
+| New/changed build script or build order | `copilot-instructions.md` Build & Run, `README.md` Setup/Development sections                                               |
+| New environment variable                | `copilot-instructions.md` Key Patterns, `README.md` Environment Variables table                                             |
+| New MCP tool or changed tool schema     | `README.md` MCP Tools section, `afk-workflow.prompt.md` if tool usage guidance changes, `testing-plan.md` MCP Tools section |
+| New gotcha or pitfall discovered        | `copilot-instructions.md` Gotchas section                                                                                   |
+| New/changed web app feature             | `README.md` Web App Features section, `testing-plan.md` Web App UI section                                                  |
+| Security model change                   | `README.md` Security section                                                                                                |
+| New/changed WebSocket behavior          | `testing-plan.md` WebSocket Connection section                                                                              |
+| New/changed push notification behavior  | `testing-plan.md` Push Notifications section                                                                                |
+| AFK workflow behavior change            | `.github/prompts/afk-workflow.prompt.md` rules, categories, or decision types                                               |
 
 ## Rules
 
