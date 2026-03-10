@@ -189,7 +189,7 @@ pnpm format:check     # Check formatting without writing
 ## Tech Stack
 
 - **Server**: Node.js, Express 5, WebSocket (`ws`), `@modelcontextprotocol/sdk`
-- **Web App**: React 19, Vite 7, Tailwind CSS 4
+- **Web App**: React 19, Vite 7, MUI (Material UI) 7, Emotion
 - **Build**: tsup (server), Vite (webapp)
 - **Lint**: ESLint 10 with `typescript-eslint` + React Hooks plugin
 - **Format**: Prettier

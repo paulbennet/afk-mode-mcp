@@ -1,11 +1,19 @@
 import { useState, useMemo } from "react";
-import type { ProgressUpdateMessage } from "../../shared/types";
-import type { AppSettings } from "../../shared/types";
+import Box from "@mui/material/Box";
+import TextField from "@mui/material/TextField";
+import Chip from "@mui/material/Chip";
+import Typography from "@mui/material/Typography";
+import HistoryIcon from "@mui/icons-material/History";
+import InputAdornment from "@mui/material/InputAdornment";
+import SearchIcon from "@mui/icons-material/Search";
+import type { ProgressUpdateMessage, AppSettings } from "../../shared/types";
 import { ProgressEntry } from "./ProgressEntry";
 
 interface Props {
   settings: AppSettings;
 }
+
+const categories = ["all", "info", "warning", "error", "success", "milestone"] as const;
 
 export function SessionHistory({ settings }: Props) {
   const [search, setSearch] = useState("");
@@ -31,48 +39,64 @@ export function SessionHistory({ settings }: Props) {
   }, [history, search, categoryFilter]);
 
   return (
-    <div className="flex flex-col h-full">
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       {/* Filters */}
-      <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 space-y-2">
-        <input
-          type="text"
+      <Box sx={{ px: 2, py: 1.5, borderBottom: 1, borderColor: "divider" }}>
+        <TextField
+          fullWidth
+          size="small"
           placeholder="Search history..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full px-3 py-2 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon fontSize="small" />
+                </InputAdornment>
+              ),
+            },
+          }}
+          sx={{ mb: 1 }}
         />
-        <div className="flex gap-1.5 overflow-x-auto">
-          {["all", "info", "warning", "error", "success", "milestone"].map((cat) => (
-            <button
+        <Box sx={{ display: "flex", gap: 0.75, overflowX: "auto", pb: 0.5 }}>
+          {categories.map((cat) => (
+            <Chip
               key={cat}
+              label={cat.charAt(0).toUpperCase() + cat.slice(1)}
+              size="small"
+              color={categoryFilter === cat ? "primary" : "default"}
+              variant={categoryFilter === cat ? "filled" : "outlined"}
               onClick={() => setCategoryFilter(cat)}
-              className={`px-2.5 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-colors ${
-                categoryFilter === cat
-                  ? "bg-blue-600 text-white"
-                  : "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400"
-              }`}
-            >
-              {cat.charAt(0).toUpperCase() + cat.slice(1)}
-            </button>
+            />
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
       {/* History list */}
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <Box sx={{ flex: 1, overflowY: "auto", px: 2, py: 1.5 }}>
         {filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-slate-400 dark:text-slate-600">
-            <span className="text-4xl mb-3">📜</span>
-            <p className="text-sm">No history entries</p>
-          </div>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              height: "100%",
+              color: "text.disabled",
+            }}
+          >
+            <HistoryIcon sx={{ fontSize: 48, mb: 1.5 }} />
+            <Typography variant="body2">No history entries</Typography>
+          </Box>
         ) : (
-          <div className="space-y-2">
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
             {filtered.map((entry) => (
               <ProgressEntry key={entry.id} entry={entry} verbosity={settings.verbosity} />
             ))}
-          </div>
+          </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

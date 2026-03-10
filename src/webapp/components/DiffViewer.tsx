@@ -1,3 +1,6 @@
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 import type { DiffInfo } from "../../shared/types";
 
 interface Props {
@@ -8,35 +11,80 @@ export function DiffViewer({ diff }: Props) {
   const beforeLines = diff.before.split("\n");
   const afterLines = diff.after.split("\n");
 
-  // Simple unified diff: show removed lines, then added lines
-  // A proper diff algorithm could be used here, but for v1 this is sufficient
   return (
-    <div className="rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">
-      <div className="px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-xs font-mono text-slate-600 dark:text-slate-400 border-b border-slate-300 dark:border-slate-600 truncate">
-        {diff.filePath}
-      </div>
-      <div className="overflow-x-auto">
-        <pre className="text-xs leading-5 font-mono">
+    <Paper variant="outlined" sx={{ overflow: "hidden" }}>
+      <Box
+        sx={{
+          px: 1.5,
+          py: 0.75,
+          bgcolor: "action.hover",
+          borderBottom: 1,
+          borderColor: "divider",
+        }}
+      >
+        <Typography variant="caption" fontFamily="monospace" color="text.secondary" noWrap>
+          {diff.filePath}
+        </Typography>
+      </Box>
+      <Box sx={{ overflowX: "auto" }}>
+        <Box
+          component="pre"
+          sx={{ m: 0, fontSize: "0.75rem", lineHeight: 1.8, fontFamily: "monospace" }}
+        >
           {beforeLines.map((line, i) => (
-            <div
+            <Box
               key={`before-${i}`}
-              className="px-3 bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-400"
+              sx={{
+                px: 1.5,
+                bgcolor: "error.main",
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "dark" ? "rgba(239,68,68,0.1)" : "rgba(239,68,68,0.06)",
+                color: "error.main",
+              }}
             >
-              <span className="select-none text-red-400 dark:text-red-600 mr-2">-</span>
+              <Typography
+                component="span"
+                sx={{
+                  userSelect: "none",
+                  mr: 1,
+                  color: "error.dark",
+                  fontFamily: "monospace",
+                  fontSize: "inherit",
+                }}
+              >
+                -
+              </Typography>
               {line}
-            </div>
+            </Box>
           ))}
           {afterLines.map((line, i) => (
-            <div
+            <Box
               key={`after-${i}`}
-              className="px-3 bg-green-50 dark:bg-green-950/50 text-green-700 dark:text-green-400"
+              sx={{
+                px: 1.5,
+                bgcolor: "success.main",
+                backgroundColor: (theme) =>
+                  theme.palette.mode === "dark" ? "rgba(34,197,94,0.1)" : "rgba(34,197,94,0.06)",
+                color: "success.main",
+              }}
             >
-              <span className="select-none text-green-400 dark:text-green-600 mr-2">+</span>
+              <Typography
+                component="span"
+                sx={{
+                  userSelect: "none",
+                  mr: 1,
+                  color: "success.dark",
+                  fontFamily: "monospace",
+                  fontSize: "inherit",
+                }}
+              >
+                +
+              </Typography>
               {line}
-            </div>
+            </Box>
           ))}
-        </pre>
-      </div>
-    </div>
+        </Box>
+      </Box>
+    </Paper>
   );
 }

@@ -1,4 +1,14 @@
 import { useState, useEffect, useRef } from "react";
+import Box from "@mui/material/Box";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import LinearProgress from "@mui/material/LinearProgress";
+import List from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
 import { useWebSocket } from "../hooks/useWebSocket";
 import { DiffViewer } from "./DiffViewer";
 
@@ -43,113 +53,125 @@ export function DecisionPrompt() {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm"
-      role="dialog"
-      aria-modal="true"
-      aria-label="Decision needed"
+    <Dialog
+      open
+      fullWidth
+      maxWidth="sm"
+      slotProps={{
+        backdrop: { sx: { backdropFilter: "blur(4px)" } },
+      }}
     >
-      <div className="w-full max-w-lg bg-white dark:bg-slate-900 rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] overflow-y-auto">
-        {/* Timeout bar */}
-        <div className="h-1 bg-slate-200 dark:bg-slate-700 rounded-t-2xl overflow-hidden">
-          <div
-            className={`h-full transition-all duration-1000 ease-linear ${
-              timeLeft < 30 ? "bg-red-500" : "bg-blue-500"
-            }`}
-            style={{ width: `${progressPct}%` }}
-          />
-        </div>
+      <LinearProgress
+        variant="determinate"
+        value={progressPct}
+        color={timeLeft < 30 ? "error" : "primary"}
+        sx={{ height: 4 }}
+      />
+      <DialogContent sx={{ p: 3 }}>
+        {/* Timer */}
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", mb: 2 }}>
+          <Typography variant="overline" color="text.secondary">
+            Decision Needed
+          </Typography>
+          <Typography
+            variant="body2"
+            fontFamily="monospace"
+            color={timeLeft < 30 ? "error.main" : "text.secondary"}
+          >
+            {formatTime(timeLeft)}
+          </Typography>
+        </Box>
 
-        <div className="p-5">
-          {/* Timer */}
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
-              Decision Needed
-            </span>
-            <span
-              className={`text-sm font-mono ${
-                timeLeft < 30 ? "text-red-500" : "text-slate-500 dark:text-slate-400"
-              }`}
+        {/* Prompt */}
+        <Typography variant="body1" fontWeight={500} sx={{ mb: 3 }}>
+          {prompt}
+        </Typography>
+
+        {/* Decision UI based on type */}
+        {decisionType === "confirm" && (
+          <Box sx={{ display: "flex", gap: 1.5 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={() => respondToDecision(id, "yes")}
+              size="large"
             >
-              {formatTime(timeLeft)}
-            </span>
-          </div>
+              Yes
+            </Button>
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={() => respondToDecision(id, "no")}
+              size="large"
+            >
+              No
+            </Button>
+          </Box>
+        )}
 
-          {/* Prompt */}
-          <p className="text-base font-medium text-slate-900 dark:text-slate-100 mb-5">{prompt}</p>
-
-          {/* Decision UI based on type */}
-          {decisionType === "confirm" && (
-            <div className="flex gap-3">
-              <button
-                onClick={() => respondToDecision(id, "yes")}
-                className="flex-1 py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-medium text-base transition-colors"
+        {decisionType === "choice" && options && (
+          <List disablePadding>
+            {options.map((opt) => (
+              <ListItemButton
+                key={opt}
+                onClick={() => respondToDecision(id, opt)}
+                sx={{ borderRadius: 1.5, border: 1, borderColor: "divider", mb: 1, py: 1.5 }}
               >
-                Yes
-              </button>
-              <button
-                onClick={() => respondToDecision(id, "no")}
-                className="flex-1 py-3 px-4 rounded-xl bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-900 dark:text-slate-100 font-medium text-base transition-colors"
+                <ListItemText primary={opt} primaryTypographyProps={{ fontWeight: 500 }} />
+              </ListItemButton>
+            ))}
+          </List>
+        )}
+
+        {decisionType === "text" && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+            <TextField
+              multiline
+              minRows={3}
+              value={textValue}
+              onChange={(e) => setTextValue(e.target.value)}
+              placeholder="Type your response..."
+              autoFocus
+              fullWidth
+            />
+            <Button
+              variant="contained"
+              onClick={() => respondToDecision(id, textValue)}
+              disabled={!textValue.trim()}
+              size="large"
+              fullWidth
+            >
+              Submit
+            </Button>
+          </Box>
+        )}
+
+        {decisionType === "diff" && diff && (
+          <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <DiffViewer diff={diff} />
+            <Box sx={{ display: "flex", gap: 1.5 }}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="success"
+                onClick={() => respondToDecision(id, "approved")}
+                size="large"
               >
-                No
-              </button>
-            </div>
-          )}
-
-          {decisionType === "choice" && options && (
-            <div className="space-y-2">
-              {options.map((opt) => (
-                <button
-                  key={opt}
-                  onClick={() => respondToDecision(id, opt)}
-                  className="w-full py-3 px-4 rounded-xl text-left bg-slate-100 dark:bg-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 border border-slate-200 dark:border-slate-700 hover:border-blue-300 dark:hover:border-blue-600 text-sm font-medium transition-colors"
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {decisionType === "text" && (
-            <div className="space-y-3">
-              <textarea
-                value={textValue}
-                onChange={(e) => setTextValue(e.target.value)}
-                className="w-full h-24 p-3 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Type your response..."
-                autoFocus
-              />
-              <button
-                onClick={() => respondToDecision(id, textValue)}
-                disabled={!textValue.trim()}
-                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 dark:disabled:bg-slate-700 text-white disabled:text-slate-500 font-medium text-base transition-colors"
+                Approve
+              </Button>
+              <Button
+                fullWidth
+                variant="contained"
+                color="error"
+                onClick={() => respondToDecision(id, "rejected")}
+                size="large"
               >
-                Submit
-              </button>
-            </div>
-          )}
-
-          {decisionType === "diff" && diff && (
-            <div className="space-y-4">
-              <DiffViewer diff={diff} />
-              <div className="flex gap-3">
-                <button
-                  onClick={() => respondToDecision(id, "approved")}
-                  className="flex-1 py-3 px-4 rounded-xl bg-green-600 hover:bg-green-700 text-white font-medium text-base transition-colors"
-                >
-                  Approve
-                </button>
-                <button
-                  onClick={() => respondToDecision(id, "rejected")}
-                  className="flex-1 py-3 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-medium text-base transition-colors"
-                >
-                  Reject
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
+                Reject
+              </Button>
+            </Box>
+          </Box>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }

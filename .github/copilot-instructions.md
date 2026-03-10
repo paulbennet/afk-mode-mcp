@@ -55,7 +55,7 @@ Build order matters: webapp builds first into `dist/webapp/`, then tsup bundles 
 - **MCP tool definitions** use zod schemas in `mcp-tools.ts`
 - **Push notifications** are optional — enabled only when `AFK_PUSH_VAPID_*` env vars are set
 - **Service worker** (`sw.ts`) is built as a separate Vite entry point, output as `dist/webapp/sw.js`
-- **Tailwind CSS 4** via `@tailwindcss/vite` plugin — no `tailwind.config.js`, use `@import "tailwindcss"` in CSS
+- **MUI (Material UI) 7** with Emotion — theme defined in `src/webapp/theme.ts`, dark/light mode via `ThemeProvider`
 
 ## Linting & Formatting
 

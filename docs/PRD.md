@@ -183,7 +183,7 @@ Sends a decision request to the mobile client and **blocks** until the user resp
 | ------------- | ---------------------------------------------------- |
 | Framework     | React 19                                             |
 | Bundler       | Vite                                                 |
-| Styling       | Tailwind CSS                                         |
+| Styling       | MUI (Material UI) 7 + Emotion                        |
 | Real-time     | Native WebSocket API                                 |
 | Notifications | Web Push API (via service worker)                    |
 | QR Generation | `qrcode` npm package (server-side, returns data-URI) |
@@ -318,7 +318,7 @@ afk-mode/
 │   │   ├── push.ts                 # Web Push notification sending
 │   │   └── qr.ts                   # QR code generation
 │   │
-│   └── webapp/                     # React web app (Vite + Tailwind)
+│   └── webapp/                     # React web app (Vite + MUI)
 │       ├── index.html
 │       ├── main.tsx                # React entry point
 │       ├── App.tsx                 # Router / layout
@@ -334,7 +334,7 @@ afk-mode/
 │       │   ├── Settings.tsx        # Preferences
 │       │   └── StatusBar.tsx       # Connection status
 │       ├── styles/
-│       │   └── globals.css         # Tailwind directives
+│       │   └── globals.css         # Base styles
 │       ├── sw.ts                   # Service worker (push + cache)
 │       └── manifest.json           # PWA manifest
 │
