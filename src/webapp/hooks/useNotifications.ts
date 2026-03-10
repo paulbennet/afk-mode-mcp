@@ -17,10 +17,27 @@ export function useNotifications() {
 
             if (perm !== "granted") return;
 
+            // Fetch VAPID public key from server
+            let vapidKey: string | null = null;
+            try {
+                const resp = await fetch("/api/vapid-key");
+                if (resp.ok) {
+                    const data = await resp.json();
+                    vapidKey = data.key;
+                }
+            } catch {
+                // VAPID not available — skip push subscription
+                return;
+            }
+
+            if (!vapidKey) return;
+
             const registration = await navigator.serviceWorker.ready;
-            const subscription = await registration.pushManager.subscribe({
+            const existing = await registration.pushManager.getSubscription();
+
+            const subscription = existing ?? await registration.pushManager.subscribe({
                 userVisibleOnly: true,
-                applicationServerKey: undefined, // VAPID key would go here
+                applicationServerKey: vapidKey,
             });
 
             const json = subscription.toJSON();

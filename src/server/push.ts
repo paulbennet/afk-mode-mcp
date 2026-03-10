@@ -29,9 +29,10 @@ export async function sendPushNotification(
         endpoint: sub.endpoint,
         keys: sub.keys as { p256dh: string; auth: string },
       },
-        );
-        return true;
-    } catch {
-        return false;
-    }
+      JSON.stringify({ title, body }),
+    );
+    return true;
+  } catch {
+    return false;
+  }
 }

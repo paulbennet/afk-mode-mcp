@@ -36,12 +36,23 @@ async function main(): Promise<void> {
     const app = express();
     const port = parseInt(process.env.AFK_PORT || "7842", 10);
 
+    // API: expose VAPID public key for push subscriptions
+    app.get("/api/vapid-key", (_req, res) => {
+        const key = process.env.AFK_PUSH_VAPID_PUBLIC;
+        if (key) {
+            res.json({ key });
+        } else {
+            res.status(404).json({ error: "VAPID not configured" });
+        }
+    });
+
     // Serve static webapp files
     const webappDir = path.resolve(__dirname, "webapp");
     app.use(express.static(webappDir));
 
     // SPA fallback — serve index.html for all non-file routes
     app.use((_req, res) => {
+        res.sendFile(path.join(webappDir, "index.html"));
     });
 
     const httpServer = createServer(app);
