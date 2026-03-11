@@ -32,8 +32,19 @@
     "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"*.{json,js,ts}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"*.{json,js,ts}\""
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Paul Bennet <paulbennetjoshua@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/paulbennet/afk-mode-mcp.git"
+  },
+  "homepage": "https://github.com/paulbennet/afk-mode-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/paulbennet/afk-mode-mcp/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "packageManager": "pnpm@10.6.5",
   "dependencies": {
     "@emotion/react": "^11.14.0",
