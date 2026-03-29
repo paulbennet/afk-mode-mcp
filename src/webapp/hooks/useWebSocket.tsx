@@ -70,6 +70,8 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
     }
 
     let closed = false;
+    let retryCount = 0;
+    const maxRetries = 10;
 
     function connect(authParam: string) {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -79,6 +81,7 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
 
       ws.onopen = () => {
         setConnectionState("connected");
+        retryCount = 0;
       };
 
       ws.onmessage = (event) => {
@@ -90,23 +93,33 @@ export function WebSocketProvider({ children }: { children: ReactNode }) {
         if (closed) return;
         setConnectionState("disconnected");
         wsRef.current = null;
-
-        // Try reconnect with ticket after 2s
-        if (reconnectTicketRef.current) {
-          const ticket = reconnectTicketRef.current;
-          reconnectTicketRef.current = null;
-          setTimeout(() => {
-            if (!closed) {
-              setConnectionState("connecting");
-              connect(`ticket=${ticket}`);
-            }
-          }, 2000);
-        }
+        scheduleReconnect();
       };
 
       ws.onerror = () => {
         // onclose will fire after this
       };
+    }
+
+    function scheduleReconnect() {
+      if (closed || retryCount >= maxRetries) return;
+
+      const delay = Math.min(2000 * Math.pow(2, retryCount), 30_000);
+      retryCount++;
+
+      setTimeout(() => {
+        if (closed) return;
+        setConnectionState("connecting");
+
+        if (reconnectTicketRef.current) {
+          const ticket = reconnectTicketRef.current;
+          reconnectTicketRef.current = null;
+          connect(`ticket=${ticket}`);
+        } else {
+          // Fall back to token when no ticket is available
+          connect(`token=${token}`);
+        }
+      }, delay);
     }
 
     function handleServerMessage(msg: ServerMessage) {

@@ -66,20 +66,20 @@ export function generateReconnectTicket(): string {
   return s.reconnectTicket;
 }
 
-export function validateReconnectTicket(ticket: string): boolean {
+export function checkReconnectTicket(ticket: string): boolean {
   const s = getSession();
-  if (
-    s.reconnectTicket &&
-    s.reconnectTicketExpiry &&
+  return (
+    s.reconnectTicket !== null &&
+    s.reconnectTicketExpiry !== null &&
     s.reconnectTicket === ticket &&
     Date.now() < s.reconnectTicketExpiry
-  ) {
-    // Invalidate after use
-    s.reconnectTicket = null;
-    s.reconnectTicketExpiry = null;
-    return true;
-  }
-  return false;
+  );
+}
+
+export function consumeReconnectTicket(): void {
+  const s = getSession();
+  s.reconnectTicket = null;
+  s.reconnectTicketExpiry = null;
 }
 
 export function addPendingDecision(pending: PendingDecision): void {

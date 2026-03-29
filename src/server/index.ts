@@ -1,4 +1,5 @@
 import { createServer } from "node:http";
+import { existsSync } from "node:fs";
 import { networkInterfaces } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -15,15 +16,33 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 function getLocalIp(): string {
   const interfaces = networkInterfaces();
-  for (const iface of Object.values(interfaces)) {
+  let fallback: string | null = null;
+
+  for (const [name, iface] of Object.entries(interfaces)) {
     if (!iface) continue;
+    const lowerName = name.toLowerCase();
     for (const addr of iface) {
-      if (addr.family === "IPv4" && !addr.internal) {
-        return addr.address;
+      if (addr.family !== "IPv4" || addr.internal) continue;
+
+      // Prefer common LAN interfaces (Wi-Fi, Ethernet)
+      const isLan =
+        lowerName.includes("wi-fi") ||
+        lowerName.includes("wifi") ||
+        lowerName.includes("wlan") ||
+        lowerName.includes("ethernet") ||
+        lowerName.includes("eth") ||
+        lowerName.includes("en0") ||
+        lowerName.includes("en1");
+
+      if (isLan) return addr.address;
+
+      // Prefer 192.168.x.x / 172.16-31.x.x ranges over VPN-like addresses (10.x.x.x)
+      if (!fallback || addr.address.startsWith("192.168.") || addr.address.startsWith("172.")) {
+        fallback = addr.address;
       }
     }
   }
-  return "127.0.0.1";
+  return fallback ?? "127.0.0.1";
 }
 
 async function main(): Promise<void> {
@@ -48,12 +67,17 @@ async function main(): Promise<void> {
   });
 
   // Serve static webapp files
+  // In production (tsup bundle), __dirname is dist/ so webapp is at dist/webapp/
+  // In dev (tsx), __dirname is src/server/ so we need to resolve to dist/webapp/
   const webappDir = path.resolve(__dirname, "webapp");
-  app.use(express.static(webappDir));
+  const webappDirResolved = existsSync(webappDir)
+    ? webappDir
+    : path.resolve(__dirname, "../../dist/webapp");
+  app.use(express.static(webappDirResolved));
 
   // SPA fallback — serve index.html for all non-file routes
   app.use((_req, res) => {
-    res.sendFile(path.join(webappDir, "index.html"));
+    res.sendFile(path.join(webappDirResolved, "index.html"));
   });
 
   const httpServer = createServer(app);
