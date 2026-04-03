@@ -65,6 +65,8 @@ AFK Mode is a single Node.js process that serves two roles simultaneously:
 5. Copilot sends progress updates and decision prompts to your phone in real time
 6. Toggle **AFK Mode off** → Copilot goes back to the normal VS Code chat panel
 
+For a deep dive into the internals — data flows, WebSocket protocol, session lifecycle, security model, and end-to-end examples — see **[Architecture](docs/architecture.md)**.
+
 ## MCP Tools
 
 The server exposes 4 tools to Copilot:
